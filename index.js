@@ -93,7 +93,7 @@ module.exports = function (qiniu, option) {
     qs.push(handler())
 
     isConcurrent && next()
-  }, function () {
+  }, function (callback) {
     Q.all(qs)
       .then(function (rets) {
         log('Total →', colors.green(uploadedFiles + '/' + rets.length));
@@ -108,7 +108,9 @@ module.exports = function (qiniu, option) {
         }
       }, function (err) {
         log('Failed upload →', err.message);
-      });
+      }).then(
+        () => callback(null)
+      );
   });
 
   function extend(target, source) {
